@@ -3,71 +3,64 @@ function randomNumber(b) {
   const randomWidth = randomNumber * b;
   return Math.floor(randomWidth);
 }
-export function createEnemies(width, height) {
+export function createEnemies(width, height, enemyNumber) {
   const enemies = [];
-  // 10 - должна быть не хардкор а переменная из main
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < enemyNumber; i++) {
     const enemyX = randomNumber(width);
     const enemyY = randomNumber(height);
     let enemy = {
       x: enemyX,
       y: enemyY,
       speed: randomNumber(10) + 3,
+      height: randomNumber(30) + 15,
+      width: randomNumber(30) + 15,
     };
     enemies.push(enemy);
   }
   return enemies;
 }
 
-export function drawEnemies(ctx, enemies, enemySpecifications) {
+export function drawEnemies(ctx, enemies) {
   const originFillStyle = ctx.fillStyle;
   ctx.fillStyle = "red";
-  // 10 - должна быть не хардкор а длина массива
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < enemies.length; i++) {
     const currentEnemy = enemies[i];
     ctx.fillRect(
       currentEnemy.x,
       currentEnemy.y,
-      enemySpecifications.width,
-      enemySpecifications.height
+      currentEnemy.width,
+      currentEnemy.height
     );
   }
   ctx.fillStyle = originFillStyle;
 }
 
 export function updateEnemiesCoordinates(enemies) {
-  let newEnemies = Object.assign({}, enemies); //копирование объекта, чтоб функция была чистой(чтоб не изменять входящие переменные)
-  // 10 - должна быть не хардкор а длина массива
-  for (let i = 0; i < 10; i++) {
+  let newEnemies = [...enemies]; //копирование объекта, чтоб функция была чистой(чтоб не изменять входящие переменные)
+  for (let i = 0; i < enemies.length; i++) {
     let currentEnemy = newEnemies[i];
     currentEnemy.x = currentEnemy.x - currentEnemy.speed;
   }
   return newEnemies;
 }
 
-export function checkEnemiesConditions(
-  enemies,
-  width,
-  height,
-  enemySpecifications
-) {
-  let newEnemies = Object.assign({}, enemies);
-  // 10 - должна быть не хардкор а длина массива
-  for (let i = 0; i < 10; i++) {
-    let a = newEnemies[i];
-    if (a.x > width) {
-      a.x = 0 - enemySpecifications.width;
-      a.y = Math.floor(Math.random() * height);
+export function checkEnemiesConditions(enemies, width, height) {
+  let newEnemies = [...enemies];
+  for (let i = 0; i < enemies.length; i++) {
+    let currentEnemy = newEnemies[i];
+    if (currentEnemy.x > width) {
+      currentEnemy.x = 0 - currentEnemy.width;
+      currentEnemy.y = Math.floor(Math.random() * height);
     }
-    if (a.x < 0 - enemySpecifications.width) {
-      a.x = width;
-      a.y = Math.floor(Math.random() * height);
+    if (currentEnemy.x < 0 - currentEnemy.width) {
+      currentEnemy.x = width;
+      currentEnemy.y = Math.floor(Math.random() * height);
     }
-    if (a.y > height - enemySpecifications.height) {
-      a.y = 0;
+    if (currentEnemy.y > height - currentEnemy.height) {
+      currentEnemy.y = 0;
     }
-    if (a.y < 0) {
-      a.y = height - enemySpecifications.height;
+    if (currentEnemy.y < 0) {
+      currentEnemy.y = height - currentEnemy.height;
     }
   }
   return newEnemies;
