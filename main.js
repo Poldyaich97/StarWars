@@ -17,21 +17,9 @@ let fps = 60;
 let canvas, ctx;
 
 let enemies = [];
-// каждому врагу добавим свою скорость - случайно сгенерированную (1 - 5)
 
-// скорость и размер каждого врага хранит в самом враге
+const enemyNumber = 10;
 
-// (enemySpecifications додумался только до объекта)
-let enemySpecifications = {
-  height: 20,
-  width: 20,
-  speed: 2,
-};
-
-// должно быть количество врагов
-const enemyNumber = 25;
-
-// объединить в объект (объединил в player)
 let player = {
   width: 20,
   height: 20,
@@ -39,7 +27,7 @@ let player = {
   speedY: 0,
   speed: 30,
 };
-
+//докинуть x y
 let x = 50;
 let y = height / 2 - player.height / 2;
 
@@ -99,13 +87,18 @@ function setupListeners() {
 }
 
 function crashCheck() {
-  for (let i = 0; i < 10; i++) {
-    let e = enemies[i];
+  for (let i = 0; i < enemies.length; i++) {
+    let currentEnemy = enemies[i];
     const pyEnd = y + player.height;
     const pxEnd = x + player.width;
-    const eyEnd = e.y + enemySpecifications.width;
-    const exEnd = e.x + enemySpecifications.height;
-    if (eyEnd < y || e.y > pyEnd || exEnd < x || e.x > pxEnd) {
+    const eyEnd = currentEnemy.y + currentEnemy.height;
+    const exEnd = currentEnemy.x + currentEnemy.width;
+    if (
+      eyEnd < y ||
+      currentEnemy.y > pyEnd ||
+      exEnd < x ||
+      currentEnemy.x > pxEnd
+    ) {
     } else {
       x = 50;
       y = height / 2 - player.height / 2;
@@ -118,7 +111,7 @@ function crashCheck() {
 function draw() {
   ctx.clearRect(0, 0, width, height);
   drawPlayer(ctx, x, y, player.width, player.height);
-  drawEnemies(ctx, enemies, enemySpecifications);
+  drawEnemies(ctx, enemies);
 }
 
 function setupInterval() {
@@ -129,20 +122,17 @@ function setupInterval() {
       player.speedX,
       player.speedY
     );
-    // 2 раза присваеваем x и y. Сделать чтобы 1
-    x = coordinates.x;
-    y = coordinates.y;
-    coordinates = checkPlayersConditions(x, y, width, height, player.width);
-    x = coordinates.x;
-    y = coordinates.y;
-    // Тоже самое с enemies
-    enemies = updateEnemiesCoordinates(enemies);
-    enemies = checkEnemiesConditions(
-      enemies,
+    coordinates = checkPlayersConditions(
+      coordinates.x,
+      coordinates.y,
       width,
       height,
-      enemySpecifications
+      player.width
     );
+    x = coordinates.x;
+    y = coordinates.y;
+    enemies = updateEnemiesCoordinates(enemies);
+    enemies = checkEnemiesConditions(enemies, width, height);
     draw();
     crashCheck();
   }, 1000 / fps);
@@ -150,7 +140,7 @@ function setupInterval() {
 
 document.addEventListener("DOMContentLoaded", () => {
   init();
-  enemies = createEnemies(width, height);
+  enemies = createEnemies(width, height, enemyNumber);
   setupInterval();
   setupListeners();
 });
@@ -165,6 +155,10 @@ document.addEventListener("touchstart", (event) => {
 
 document.addEventListener("touchend", (event) => {
   player.speedY = 0;
+});
+document.addEventListener("mousemove", (event) => {
+  x = event.clientX;
+  y = event.clientY;
 });
 
 // fps - через range
