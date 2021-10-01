@@ -32,3 +32,13 @@ export function updatePlayerCoordinates(x, y, speedX, speedY) {
   };
   return coordinates;
 }
+
+export function Player() {
+  this.width = 20;
+  this.height = 20;
+  this.speedX = 0;
+  this.speedY = 0;
+  this.speed = 30;
+  this.x = 50;
+  this.y = 0;
+}
