@@ -8,13 +8,10 @@ export function createEnemies(width, height, enemyNumber) {
   for (let i = 0; i < enemyNumber; i++) {
     const enemyX = randomNumber(width);
     const enemyY = randomNumber(height);
-    let enemy = {
-      x: enemyX,
-      y: enemyY,
-      speed: randomNumber(10) + 3,
-      height: randomNumber(30) + 15,
-      width: randomNumber(30) + 15,
-    };
+    const speed = randomNumber(10) + 3;
+    const enemyHeight = randomNumber(30) + 15;
+    const enemyWidth = randomNumber(30) + 15;
+    const enemy = new Enemy(enemyX, enemyY, speed, enemyHeight, enemyWidth);
     enemies.push(enemy);
   }
   return enemies;
@@ -50,11 +47,11 @@ export function checkEnemiesConditions(enemies, width, height) {
     let currentEnemy = newEnemies[i];
     if (currentEnemy.x > width) {
       currentEnemy.x = 0 - currentEnemy.width;
-      currentEnemy.y = Math.floor(Math.random() * height);
+      currentEnemy.y = randomNumber(height); // использовать хелпер
     }
     if (currentEnemy.x < 0 - currentEnemy.width) {
       currentEnemy.x = width;
-      currentEnemy.y = Math.floor(Math.random() * height);
+      currentEnemy.y = randomNumber(height); // использовать хелпер
     }
     if (currentEnemy.y > height - currentEnemy.height) {
       currentEnemy.y = 0;
@@ -64,4 +61,12 @@ export function checkEnemiesConditions(enemies, width, height) {
     }
   }
   return newEnemies;
+}
+
+function Enemy(x, y, speed, height, width) {
+  this.x = x;
+  this.y = y;
+  this.speed = speed;
+  this.height = height;
+  this.width = width;
 }
