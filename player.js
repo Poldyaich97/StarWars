@@ -20,8 +20,8 @@ export function checkPlayersConditions(x, y, width, height, playerW) {
   return coordinates;
 }
 
-export function drawPlayer(ctx, x, y, playerW, playerH) {
-  ctx.fillRect(x, y, playerW, playerH);
+export function drawPlayer(ctx, x, y, playerW, playerH, image) {
+  ctx.drawImage(image, 0, 0, playerW, playerH, x, y, playerW, playerH);
 }
 export function updatePlayerCoordinates(x, y, speedX, speedY) {
   let newX = x + speedX;
@@ -34,8 +34,8 @@ export function updatePlayerCoordinates(x, y, speedX, speedY) {
 }
 
 export function Player() {
-  this.width = 20;
-  this.height = 20;
+  this.width = 32;
+  this.height = 32;
   this.speedX = 0;
   this.speedY = 0;
   this.speed = 30;
