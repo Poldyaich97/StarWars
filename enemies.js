@@ -9,20 +9,25 @@ export function createEnemies(width, height, enemyNumber) {
     const enemyX = randomNumber(width);
     const enemyY = randomNumber(height);
     const speed = randomNumber(10) + 3;
-    const enemyHeight = randomNumber(30) + 15;
-    const enemyWidth = randomNumber(30) + 15;
+    const enemyHeight = 32;
+    const enemyWidth = 32;
     const enemy = new Enemy(enemyX, enemyY, speed, enemyHeight, enemyWidth);
     enemies.push(enemy);
   }
   return enemies;
 }
 
-export function drawEnemies(ctx, enemies) {
+export function drawEnemies(ctx, enemies, image) {
   const originFillStyle = ctx.fillStyle;
   ctx.fillStyle = "red";
   for (let i = 0; i < enemies.length; i++) {
     const currentEnemy = enemies[i];
-    ctx.fillRect(
+    ctx.drawImage(
+      image,
+      0,
+      0,
+      currentEnemy.width,
+      currentEnemy.height,
       currentEnemy.x,
       currentEnemy.y,
       currentEnemy.width,
@@ -47,11 +52,11 @@ export function checkEnemiesConditions(enemies, width, height) {
     let currentEnemy = newEnemies[i];
     if (currentEnemy.x > width) {
       currentEnemy.x = 0 - currentEnemy.width;
-      currentEnemy.y = randomNumber(height); // использовать хелпер
+      currentEnemy.y = randomNumber(height);
     }
     if (currentEnemy.x < 0 - currentEnemy.width) {
       currentEnemy.x = width;
-      currentEnemy.y = randomNumber(height); // использовать хелпер
+      currentEnemy.y = randomNumber(height);
     }
     if (currentEnemy.y > height - currentEnemy.height) {
       currentEnemy.y = 0;
