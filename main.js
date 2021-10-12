@@ -14,20 +14,43 @@ import {
 
 let width = window.innerWidth;
 let height = window.innerHeight;
-let fps = 60;
 let canvas, ctx;
 
 let enemies = [];
+let tiles = {};
 
 const enemyNumber = 10;
 const player = new Player();
 
-function init() {
+function drawBackground(ctx, image, width, height) {
+  const pattern = ctx.createPattern(image, "repeat");
+  ctx.fillStyle = pattern;
+  ctx.fillRect(0, 0, width, height);
+}
+
+function loadImg(url, key) {
+  return new Promise((resolve) => {
+    let image = document.createElement("img");
+    image.addEventListener("load", () => {
+      tiles[key] = image;
+      resolve();
+    });
+
+    image.setAttribute("src", url);
+  });
+}
+
+async function init() {
   canvas = document.createElement("canvas");
   canvas.height = height;
   canvas.width = width;
   document.getElementById("root").appendChild(canvas);
   ctx = canvas.getContext("2d");
+  await Promise.all([
+    loadImg("./img/Dove.png", "enemy"),
+    loadImg("./img/Lightning.png", "player"),
+    loadImg("./img/bg.png", "bg"),
+  ]);
 }
 
 function setupListeners() {
@@ -119,8 +142,16 @@ function crashCheck() {
 
 function draw() {
   ctx.clearRect(0, 0, width, height);
-  drawPlayer(ctx, player.x, player.y, player.width, player.height);
-  drawEnemies(ctx, enemies);
+  drawBackground(ctx, tiles.bg, width, height);
+  drawPlayer(
+    ctx,
+    player.x,
+    player.y,
+    player.width,
+    player.height,
+    tiles.player
+  );
+  drawEnemies(ctx, enemies, tiles.enemy);
 }
 
 function mainTick() {
@@ -146,8 +177,8 @@ function mainTick() {
   window.requestAnimationFrame(mainTick);
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  init();
+document.addEventListener("DOMContentLoaded", async () => {
+  await init();
   enemies = createEnemies(width, height, enemyNumber);
   mainTick();
   setupListeners();
