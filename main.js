@@ -5,12 +5,9 @@ import {
   drawEnemies,
 } from "./enemies.js";
 
-import {
-  updatePlayerCoordinates,
-  checkPlayersConditions,
-  drawPlayer,
-  Player,
-} from "./player.js";
+import { Player } from "./player.js";
+
+import { Shot, drawShots } from "./shots.js";
 
 let width = window.innerWidth;
 let height = window.innerHeight;
@@ -18,6 +15,8 @@ let canvas, ctx;
 
 let enemies = [];
 let tiles = {};
+const shots = []; // Функция отрисовки,создания, обновления координат, пересечения с врагами.
+//нужно,чтоб они удалялись(патроны)
 
 const enemyNumber = 10;
 const player = new Player();
@@ -75,6 +74,7 @@ function setupListeners() {
         break;
     }
   });
+
   document.addEventListener("keyup", (event) => {
     const k = event.key;
     switch (k) {
@@ -90,6 +90,15 @@ function setupListeners() {
       case "ArrowDown":
         player.speedY = 0;
         break;
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    const b = event.key;
+    switch (b) {
+      case " ":
+        const shot = new Shot(player.x, player.y, 5);
+        shots.push(shot);
     }
   });
   document.addEventListener("touchstart", (event) => {
@@ -143,35 +152,16 @@ function crashCheck() {
 function draw() {
   ctx.clearRect(0, 0, width, height);
   drawBackground(ctx, tiles.bg, width, height);
-  drawPlayer(
-    ctx,
-    player.x,
-    player.y,
-    player.width,
-    player.height,
-    tiles.player
-  );
+  player.draw(ctx, tiles.player);
   drawEnemies(ctx, enemies, tiles.enemy);
+  drawShots(ctx, shots);
 }
 
 function mainTick() {
-  let coordinates = updatePlayerCoordinates(
-    player.x,
-    player.y,
-    player.speedX,
-    player.speedY
-  );
-  coordinates = checkPlayersConditions(
-    coordinates.x,
-    coordinates.y,
-    width,
-    height,
-    player.width
-  );
-  player.x = coordinates.x;
-  player.y = coordinates.y;
-  enemies = updateEnemiesCoordinates(enemies);
-  enemies = checkEnemiesConditions(enemies, width, height);
+  player.updateCoordinates();
+  player.checkConditions(width, height);
+  updateEnemiesCoordinates(enemies);
+  checkEnemiesConditions(enemies, width, height);
   draw();
   crashCheck();
   window.requestAnimationFrame(mainTick);
