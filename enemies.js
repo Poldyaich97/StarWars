@@ -18,54 +18,21 @@ export function createEnemies(width, height, enemyNumber) {
 }
 
 export function drawEnemies(ctx, enemies, image) {
-  const originFillStyle = ctx.fillStyle;
-  ctx.fillStyle = "red";
   for (let i = 0; i < enemies.length; i++) {
-    const currentEnemy = enemies[i];
-    ctx.drawImage(
-      image,
-      0,
-      0,
-      currentEnemy.width,
-      currentEnemy.height,
-      currentEnemy.x,
-      currentEnemy.y,
-      currentEnemy.width,
-      currentEnemy.height
-    );
+    enemies[i].draw(ctx, image);
   }
-  ctx.fillStyle = originFillStyle;
 }
 
 export function updateEnemiesCoordinates(enemies) {
-  let newEnemies = [...enemies]; //копирование объекта, чтоб функция была чистой(чтоб не изменять входящие переменные)
   for (let i = 0; i < enemies.length; i++) {
-    let currentEnemy = newEnemies[i];
-    currentEnemy.x = currentEnemy.x - currentEnemy.speed;
+    enemies[i].updateCoordinates();
   }
-  return newEnemies;
 }
 
 export function checkEnemiesConditions(enemies, width, height) {
-  let newEnemies = [...enemies];
   for (let i = 0; i < enemies.length; i++) {
-    let currentEnemy = newEnemies[i];
-    if (currentEnemy.x > width) {
-      currentEnemy.x = 0 - currentEnemy.width;
-      currentEnemy.y = randomNumber(height);
-    }
-    if (currentEnemy.x < 0 - currentEnemy.width) {
-      currentEnemy.x = width;
-      currentEnemy.y = randomNumber(height);
-    }
-    if (currentEnemy.y > height - currentEnemy.height) {
-      currentEnemy.y = 0;
-    }
-    if (currentEnemy.y < 0) {
-      currentEnemy.y = height - currentEnemy.height;
-    }
+    enemies[i].checkConditions(width, height);
   }
-  return newEnemies;
 }
 
 function Enemy(x, y, speed, height, width) {
@@ -74,4 +41,36 @@ function Enemy(x, y, speed, height, width) {
   this.speed = speed;
   this.height = height;
   this.width = width;
+  this.draw = function (ctx, image) {
+    ctx.drawImage(
+      image,
+      0,
+      0,
+      this.width,
+      this.height,
+      this.x,
+      this.y,
+      this.width,
+      this.height
+    );
+  };
+  this.updateCoordinates = function () {
+    this.x = this.x - this.speed;
+  };
+  this.checkConditions = function (width, height) {
+    if (this.x > width) {
+      this.x = 0 - this.width;
+      this.y = randomNumber(height);
+    }
+    if (this.x < 0 - this.width) {
+      this.x = width;
+      this.y = randomNumber(height);
+    }
+    if (this.y > height - this.height) {
+      this.y = 0;
+    }
+    if (this.y < 0) {
+      this.y = height - this.height;
+    }
+  };
 }
