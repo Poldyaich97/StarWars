@@ -6,9 +6,21 @@ export function Player() {
   this.speed = 30;
   this.x = 50;
   this.y = 0;
-  this.updateCoordinates = function () {
+  this.updateCoordinates = function (width, height) {
     this.x = this.x + this.speedX;
     this.y = this.y + this.speedY;
+    if (this.x > width - this.width) {
+      this.x = 0;
+    }
+    if (this.x < 0) {
+      this.x = width - this.width;
+    }
+    if (this.y > height - this.width) {
+      this.y = 0;
+    }
+    if (this.y < 0) {
+      this.y = height - this.width;
+    }
   };
   this.centerX = function () {
     return this.x + this.width / 2;
@@ -28,17 +40,5 @@ export function Player() {
       this.width,
       this.height
     );
-    if (this.x > width - this.width) {
-      this.x = 0;
-    }
-    if (this.x < 0) {
-      this.x = width - this.width;
-    }
-    if (this.y > height - this.width) {
-      this.y = 0;
-    }
-    if (this.y < 0) {
-      this.y = height - this.width;
-    }
   };
 }

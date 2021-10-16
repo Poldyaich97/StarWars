@@ -147,14 +147,14 @@ function crashCheck() {
 function draw() {
   ctx.clearRect(0, 0, width, height);
   drawBackground(ctx, tiles.bg, width, height);
-  player.draw(ctx, tiles.player, width, height);
+  player.draw(ctx, tiles.player);
   drawShots(ctx, shots);
   enemies.forEach((element) => element.draw(ctx, tiles.enemy));
 }
 
 function mainTick() {
   updateShotsCoordinates(shots);
-  player.updateCoordinates();
+  player.updateCoordinates(width, height);
   // player.checkConditions(width, height);
   enemies.forEach((element) => element.updateCoordinates());
   enemies.forEach((element) => element.checkConditions(width, height));
