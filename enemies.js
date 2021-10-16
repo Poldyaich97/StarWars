@@ -17,24 +17,6 @@ export function createEnemies(width, height, enemyNumber) {
   return enemies;
 }
 
-export function drawEnemies(ctx, enemies, image) {
-  for (let i = 0; i < enemies.length; i++) {
-    enemies[i].draw(ctx, image);
-  }
-}
-
-export function updateEnemiesCoordinates(enemies) {
-  for (let i = 0; i < enemies.length; i++) {
-    enemies[i].updateCoordinates();
-  }
-}
-
-export function checkEnemiesConditions(enemies, width, height) {
-  for (let i = 0; i < enemies.length; i++) {
-    enemies[i].checkConditions(width, height);
-  }
-}
-
 function Enemy(x, y, speed, height, width) {
   this.x = x;
   this.y = y;

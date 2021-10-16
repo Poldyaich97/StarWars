@@ -1,13 +1,8 @@
-import {
-  createEnemies,
-  updateEnemiesCoordinates,
-  checkEnemiesConditions,
-  drawEnemies,
-} from "./enemies.js";
+import { createEnemies } from "./enemies.js";
 
 import { Player } from "./player.js";
 
-import { Shot, drawShots } from "./shots.js";
+import { Shot, drawShots, updateShotsCoordinates } from "./shots.js";
 
 let width = window.innerWidth;
 let height = window.innerHeight;
@@ -93,11 +88,11 @@ function setupListeners() {
     }
   });
 
-  document.addEventListener("keydown", (event) => {
+  document.addEventListener("keypress", (event) => {
     const b = event.key;
     switch (b) {
       case " ":
-        const shot = new Shot(player.x, player.y, 5);
+        const shot = new Shot(player.centerX(), player.centerY(), 5);
         shots.push(shot);
     }
   });
@@ -152,16 +147,17 @@ function crashCheck() {
 function draw() {
   ctx.clearRect(0, 0, width, height);
   drawBackground(ctx, tiles.bg, width, height);
-  player.draw(ctx, tiles.player);
-  drawEnemies(ctx, enemies, tiles.enemy);
+  player.draw(ctx, tiles.player, width, height);
   drawShots(ctx, shots);
+  enemies.forEach((element) => element.draw(ctx, tiles.enemy));
 }
 
 function mainTick() {
+  updateShotsCoordinates(shots);
   player.updateCoordinates();
-  player.checkConditions(width, height);
-  updateEnemiesCoordinates(enemies);
-  checkEnemiesConditions(enemies, width, height);
+  // player.checkConditions(width, height);
+  enemies.forEach((element) => element.updateCoordinates());
+  enemies.forEach((element) => element.checkConditions(width, height));
   draw();
   crashCheck();
   window.requestAnimationFrame(mainTick);

@@ -10,7 +10,13 @@ export function Player() {
     this.x = this.x + this.speedX;
     this.y = this.y + this.speedY;
   };
-  this.draw = function (ctx, image) {
+  this.centerX = function () {
+    return this.x + this.width / 2;
+  };
+  this.centerY = function () {
+    return this.y + this.height / 2;
+  };
+  this.draw = function (ctx, image, width, height) {
     ctx.drawImage(
       image,
       0,
@@ -22,8 +28,6 @@ export function Player() {
       this.width,
       this.height
     );
-  };
-  this.checkConditions = function (width, height) {
     if (this.x > width - this.width) {
       this.x = 0;
     }
