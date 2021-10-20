@@ -88,11 +88,11 @@ function setupListeners() {
     }
   });
 
-  document.addEventListener("keypress", (event) => {
+  document.addEventListener("keydown", (event) => {
     const b = event.key;
     switch (b) {
       case " ":
-        const shot = new Shot(player.centerX(), player.centerY(), 5);
+        const shot = new Shot(player.centerX(), player.centerY(), 5, enemies);
         shots.push(shot);
     }
   });
@@ -131,6 +131,18 @@ function isIntersect(player, enemy) {
     enemy.x > pxEnd
   );
 }
+function isIntersect2(shots, enemy) {
+  const pyEnd = shots.y + 5;
+  const pxEnd = shots.x + 5;
+  const eyEnd = enemy.y + enemy.height;
+  const exEnd = enemy.x + enemy.width;
+  return !(
+    eyEnd < shots.y ||
+    enemy.y > pyEnd ||
+    exEnd < player.x ||
+    enemy.x > pxEnd
+  );
+}
 
 function crashCheck() {
   for (let i = 0; i < enemies.length; i++) {
@@ -140,6 +152,18 @@ function crashCheck() {
       player.y = height / 2 - player.height / 2;
       player.speedX = 0;
       player.speedY = 0;
+    }
+  }
+}
+function shotKill() {
+  for (let i = 0; i < enemies.length; i++) {
+    for (let a = 0; a < shots.length; a++) {
+      const intersect = isIntersect2(shots[a], enemies[i]);
+      if (intersect) {
+        console.log("true");
+      } else {
+        console.log("false");
+      }
     }
   }
 }
@@ -160,6 +184,7 @@ function mainTick() {
   enemies.forEach((element) => element.checkConditions(width, height));
   draw();
   crashCheck();
+  shotKill();
   window.requestAnimationFrame(mainTick);
 }
 

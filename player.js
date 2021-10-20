@@ -3,7 +3,7 @@ export function Player() {
   this.height = 32;
   this.speedX = 0;
   this.speedY = 0;
-  this.speed = 30;
+  this.speed = 10;
   this.x = 50;
   this.y = 0;
   this.updateCoordinates = function (width, height) {

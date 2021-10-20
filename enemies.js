@@ -8,7 +8,8 @@ export function createEnemies(width, height, enemyNumber) {
   for (let i = 0; i < enemyNumber; i++) {
     const enemyX = randomNumber(width);
     const enemyY = randomNumber(height);
-    const speed = randomNumber(10) + 3;
+    // const speed = randomNumber(10) + 3;
+    const speed = 2;
     const enemyHeight = 32;
     const enemyWidth = 32;
     const enemy = new Enemy(enemyX, enemyY, speed, enemyHeight, enemyWidth);
