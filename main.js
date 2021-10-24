@@ -92,7 +92,7 @@ function setupListeners() {
     const b = event.key;
     switch (b) {
       case " ":
-        const shot = new Shot(player.centerX(), player.centerY(), 5, enemies);
+        const shot = new Shot(player.centerX(), player.centerY(), 5, 5);
         shots.push(shot);
     }
   });
@@ -119,28 +119,16 @@ function setupListeners() {
     canvas.width = width;
   });
 }
-function isIntersect(player, enemy) {
-  const pyEnd = player.y + player.height;
-  const pxEnd = player.x + player.width;
-  const eyEnd = enemy.y + enemy.height;
-  const exEnd = enemy.x + enemy.width;
+function isIntersect(obj1, obj2) {
+  const pyEnd = obj1.y + obj1.height;
+  const pxEnd = obj1.x + obj1.width;
+  const eyEnd = obj2.y + obj2.height;
+  const exEnd = obj2.x + obj2.width;
   return !(
-    eyEnd < player.y ||
-    enemy.y > pyEnd ||
-    exEnd < player.x ||
-    enemy.x > pxEnd
-  );
-}
-function isIntersect2(shots, enemy) {
-  const pyEnd = shots.y + 5;
-  const pxEnd = shots.x + 5;
-  const eyEnd = enemy.y + enemy.height;
-  const exEnd = enemy.x + enemy.width;
-  return !(
-    eyEnd < shots.y ||
-    enemy.y > pyEnd ||
-    exEnd < player.x ||
-    enemy.x > pxEnd
+    eyEnd < obj1.y ||
+    obj2.y > pyEnd ||
+    exEnd < obj1.x ||
+    obj2.x > pxEnd
   );
 }
 
@@ -157,12 +145,12 @@ function crashCheck() {
 }
 function shotKill() {
   for (let i = 0; i < enemies.length; i++) {
-    for (let a = 0; a < shots.length; a++) {
-      const intersect = isIntersect2(shots[a], enemies[i]);
+    for (let j = 0; j < shots.length; j++) {
+      const intersect = isIntersect(enemies[i], shots[j]);
       if (intersect) {
-        console.log("true");
-      } else {
-        console.log("false");
+        enemies.splice(i, 1);
+        shots.splice(j, 1);
+        break;
       }
     }
   }
@@ -177,7 +165,7 @@ function draw() {
 }
 
 function mainTick() {
-  updateShotsCoordinates(shots);
+  updateShotsCoordinates(shots, width);
   player.updateCoordinates(width, height);
   // player.checkConditions(width, height);
   enemies.forEach((element) => element.updateCoordinates());
