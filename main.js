@@ -1,4 +1,4 @@
-import { createEnemies } from "./enemies.js";
+import { createEnemies, fillEnemies } from "./enemies.js";
 
 import { Player } from "./player.js";
 
@@ -10,8 +10,7 @@ let canvas, ctx;
 
 let enemies = [];
 let tiles = {};
-const shots = []; // Функция отрисовки,создания, обновления координат, пересечения с врагами.
-//нужно,чтоб они удалялись(патроны)
+const shots = [];
 
 const enemyNumber = 10;
 const player = new Player();
@@ -156,6 +155,10 @@ function shotKill() {
   }
 }
 
+function intervalCreateEnemies() {
+  fillEnemies(enemies, width, height, 5);
+}
+
 function draw() {
   ctx.clearRect(0, 0, width, height);
   drawBackground(ctx, tiles.bg, width, height);
@@ -167,9 +170,7 @@ function draw() {
 function mainTick() {
   updateShotsCoordinates(shots, width);
   player.updateCoordinates(width, height);
-  // player.checkConditions(width, height);
-  enemies.forEach((element) => element.updateCoordinates());
-  enemies.forEach((element) => element.checkConditions(width, height));
+  enemies.forEach((element) => element.updateCoordinates(width, height));
   draw();
   crashCheck();
   shotKill();
@@ -181,4 +182,5 @@ document.addEventListener("DOMContentLoaded", async () => {
   enemies = createEnemies(width, height, enemyNumber);
   mainTick();
   setupListeners();
+  setInterval(intervalCreateEnemies, 5000);
 });
