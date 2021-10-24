@@ -4,10 +4,10 @@ export function Shot(x, y, speed, size) {
   this.width = size;
   this.height = size;
   this.speed = speed;
-  this.updateCoordinates = function () {
-    this.x = this.x + this.speed;
-  };
 }
+Shot.prototype.updateCoordinates = function () {
+  this.x = this.x + this.speed;
+};
 
 export function drawShots(ctx, shots) {
   ctx.fillStyle = "red";
