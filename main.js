@@ -1,4 +1,4 @@
-import { createEnemies, fillEnemies } from "./enemies.js";
+import { createEnemies, fillEnemies, randomNumber } from "./enemies.js";
 
 import { Player } from "./player.js";
 
@@ -7,12 +7,13 @@ import { Shot, drawShots, updateShotsCoordinates } from "./shots.js";
 let width = window.innerWidth;
 let height = window.innerHeight;
 let canvas, ctx;
-
+const INITIAL_LIVES = 3;
+let lives = INITIAL_LIVES;
 let enemies = [];
 let tiles = {};
 const shots = [];
-
-const enemyNumber = 10;
+let shotCreatingIntervalId;
+const enemyNumber = 30;
 const player = new Player();
 
 function drawBackground(ctx, image, width, height) {
@@ -91,24 +92,23 @@ function setupListeners() {
     const b = event.key;
     switch (b) {
       case " ":
-        const shot = new Shot(player.centerX(), player.centerY(), 5, 5);
-        shots.push(shot);
-    }
-  });
-  document.addEventListener("touchstart", (event) => {
-    if (event.touches[0].clientY < player.y + player.height / 2) {
-      player.speedY = -5;
-    } else {
-      player.speedY = 5;
+        if (shotCreatingIntervalId === undefined) {
+          shots.push(new Shot(player.centerX(), player.centerY(), 5, 5));
+          shotCreatingIntervalId = setInterval(() => {
+            let shot = new Shot(player.centerX(), player.centerY(), 5, 5);
+            shots.push(shot);
+          }, 100);
+        }
     }
   });
 
-  document.addEventListener("touchend", (event) => {
-    player.speedY = 0;
-  });
-  document.addEventListener("mousemove", (event) => {
-    player.x = event.clientX;
-    player.y = event.clientY;
+  document.addEventListener("keyup", (event) => {
+    const b = event.key;
+    switch (b) {
+      case " ":
+        clearInterval(shotCreatingIntervalId);
+        shotCreatingIntervalId = undefined;
+    }
   });
 
   window.addEventListener("resize", () => {
@@ -139,6 +139,7 @@ function crashCheck() {
       player.y = height / 2 - player.height / 2;
       player.speedX = 0;
       player.speedY = 0;
+      handleBreaking();
     }
   }
 }
@@ -154,7 +155,22 @@ function shotKill() {
     }
   }
 }
+function handleBreaking() {
+  lives--;
+  if (lives === 0) {
+    alert("Gg");
+    reset();
+  }
+}
 
+function reset() {
+  enemies = createEnemies(width, height, enemyNumber);
+  lives = INITIAL_LIVES;
+  player.x = 50;
+  player.y = height / 2 - player.height / 2;
+  player.speedX = 0;
+  player.speedY = 0;
+}
 function intervalCreateEnemies() {
   fillEnemies(enemies, width, height, 5);
 }
@@ -170,11 +186,17 @@ function draw() {
 function mainTick() {
   updateShotsCoordinates(shots, width);
   player.updateCoordinates(width, height);
-  enemies.forEach((element) => element.updateCoordinates(width, height));
+  enemies.forEach((element) =>
+    element.updateCoordinates(width, height, handleBreaking)
+  );
   draw();
   crashCheck();
   shotKill();
   window.requestAnimationFrame(mainTick);
+}
+function randomTick() {
+  intervalCreateEnemies();
+  setTimeout(randomTick, randomNumber(1, 6) * 1000);
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -182,5 +204,5 @@ document.addEventListener("DOMContentLoaded", async () => {
   enemies = createEnemies(width, height, enemyNumber);
   mainTick();
   setupListeners();
-  setInterval(intervalCreateEnemies, 5000);
+  randomTick();
 });
