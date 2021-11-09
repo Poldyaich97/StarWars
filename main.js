@@ -41,8 +41,8 @@ async function init() {
   document.getElementById("root").appendChild(canvas);
   ctx = canvas.getContext("2d");
   await Promise.all([
-    loadImg("./img/Dove.png", "enemy"),
-    loadImg("./img/Lightning.png", "player"),
+    loadImg("./img/dove.png", "enemy"),
+    loadImg("./img/lightning.png", "player"),
     loadImg("./img/bg.png", "bg"),
   ]);
 }
