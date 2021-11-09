@@ -1,6 +1,9 @@
 # Game "Star wars"
 
-Vanilla JS canvas game.
+![Header image](https://poldyaich97.github.io/StarWars/img/starWarsTop.png)
+
+### Vanilla JS canvas game.
+
 The movement of the player on the field is carried out through the arrows.
 To shoot, press the space bar.
 The game will end when three enemies intersect with the player or go out of sight.
